@@ -11,6 +11,7 @@ app.get('/', function (req, res) {
         User.findAll().then((user) => {
             res.send(JSON.stringify(user))
         }, err => {
+            console.log(err)
             res.status(404).send("Error in fetching geoLocation")
         })
     })
