@@ -10,18 +10,32 @@ app.get('/', function (req, res) {
     db.sync().then(() => {
         User.findAll().then((user) => {
             res.send(JSON.stringify(user))
+        }, err => {
+            console.log(err)
+            res.status(404).send("Error in fetching geoLocation")
         })
     })
 })
 
 // This responds a POST request for the homepage
 app.post('/', function (req, res) {
+    console.log(req.body)
     let body = req.body;
-    db.sync().then(() => {
-        User.upsert(body).then(() => {
-            res.send("Done")
+    if (Object.keys(body).length === 0) {
+        res.status(400).send(JSON.stringify({
+            message: "Bad request! Body is empty"
+        }))
+    }
+    else {
+        db.sync().then(() => {
+            User.upsert(body).then(() => {
+                res.send("Done")
+            }, err => {
+                console.log(err)
+                res.status(400).send("Bad request")
+            })
         })
-    })
+    }
 })
 
 // url/getcoords/1/1/2018-12-30/2019-1-24
