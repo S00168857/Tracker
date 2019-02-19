@@ -150,6 +150,33 @@ app.post('/user', (req, res) => {
         })
     })
 })
+
+//create query (Sproc)
+
+app.get('/user/:userEmail', (req, res) => {
+    let userEmail = req.params.userEmail
+
+    db.sync().then(() => {
+        let query = `call 3rdYearProject.Return_User_ID('${userEmail}');`
+        db.query(query).then(data => {
+            res.status(200).send({
+                message: 'User Found',
+                data
+            })
+        }, err => {
+            res.status(400).send({
+                message: 'Error with query',
+                err
+            })
+        }, err => {
+            res.status(400).send({
+                message: 'Error with query',
+                err
+            })
+        })
+    })
+})
+
 //Make server listen on localhost:3000
 app.listen(3000, () => {
     console.log("Listening on port 3000")
