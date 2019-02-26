@@ -111,7 +111,6 @@ app.post('/user', (req, res) => {
     let user = req.body
 
     let necessaryProperties = [
-        "UserID",
         "roleID",
         "FirstName",
         "LastName",
