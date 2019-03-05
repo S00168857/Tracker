@@ -176,6 +176,36 @@ app.get('/user/:userEmail', (req, res) => {
     })
 })
 
+app.get('/userInfo/:userId', (req, res) => {
+    let userId = req.params.userId
+
+    if (userId !== undefined) {
+        let query = `call 3rdYearProject.Retrieve_User_Data('${userId}');`
+
+        db.sync().then(() => {
+            db.query(query).then(data => {
+                res.send({
+                    message: 'User Info retrieved',
+                    data: data
+                })
+            }, err => {
+                res.status(400).send({
+                    message: 'Error when querying.'
+                })
+            })
+        }, err => {
+            res.status(400).send({
+                message: 'Something went wrong connecting to db.'
+            })
+        })
+    }
+    else {
+        res.status(400).send({
+            message: "Bad request! One of the properties is missing or empty!"
+        })
+    }
+})
+
 //Make server listen on localhost:3000
 app.listen(3000, () => {
     console.log("Listening on port 3000")
