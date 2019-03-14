@@ -1,10 +1,11 @@
-const bodyParser = require('body-parser')
-const express = require('express')
-const app = express();
-const db = require('./suquelize')
-const User = require('./tables').User
+//App.js is the main script for the API
+const bodyParser = require('body-parser')//Requirement for taking in JSON data
+const express = require('express')//Package for making servers
+const app = express();//Creating an instance of the server
+const db = require('./suquelize')//Importing db file
+const User = require('./tables').User//User model
 
-app.use(bodyParser.json())
+app.use(bodyParser.json())//Taking in JSON data
 // This gets all user in table
 app.get('/', function (req, res) {
     db.sync().then(() => {
@@ -17,7 +18,7 @@ app.get('/', function (req, res) {
     })
 })
 
-// This responds a POST request for the homepage
+// This adds co-ordinats to db
 app.post('/', function (req, res) {
     console.log(req.body)
     let body = req.body;
@@ -38,6 +39,7 @@ app.post('/', function (req, res) {
     }
 })
 
+//Gets Co-ords for specific user and device
 // url/getcoords/1/1/2018-12-30/2019-1-24
 app.get('/getcoords/:userId/:deviceId/:startDate/:endDate', function (req, res) { //Requestng params
     let userId = req.params.userId
@@ -45,13 +47,13 @@ app.get('/getcoords/:userId/:deviceId/:startDate/:endDate', function (req, res) 
     let startDate = req.params.startDate
     let endDate = req.params.endDate
 
-    //Ensuring theyre there
+    //Ensures all paramaters are filled
     if (userId !== undefined && deviceId !== undefined && startDate !== undefined && endDate !== undefined) {
         let query = `Call 3rdYearProject.Retrieve_Location_Data(${userId},${deviceId},'${startDate}','${endDate}');`
         //Call query
         //Execute
         //Error checks
-        db.sync().then(() => {
+        db.sync().then(() => {//Connect to db and sync changes
             db.query(query).then(data => {
                 res.send({
                     message: 'Location retrieved',
@@ -130,7 +132,7 @@ app.post('/user', (req, res) => {
         }
     })
 
-    //create query (Sproc)
+    //Create query (Sproc) Inserting user into db
     db.sync().then(() => {
         let query = `call 3rdYearProject.Insert_User_Data(${user.UserID}, ${user.roleID}, '${user.FirstName}','${user.LastName}','${user.Address1}','${user.Address2}','${user.Address3}','${user.county}','${user.ContactNo}', '${user.email}');`
         db.query(query).then(data => {
@@ -151,8 +153,7 @@ app.post('/user', (req, res) => {
     })
 })
 
-//create query (Sproc)
-
+//Create query (Sproc) - Retreves user by user email
 app.get('/user/:userEmail', (req, res) => {
     let userEmail = req.params.userEmail
 
@@ -177,6 +178,7 @@ app.get('/user/:userEmail', (req, res) => {
     })
 })
 
+//Gets user data by userID
 app.get('/userInfo/:userId', (req, res) => {
     let userId = req.params.userId
 
