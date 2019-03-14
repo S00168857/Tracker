@@ -113,7 +113,6 @@ app.post('/user', (req, res) => {
     let user = req.body
 
     let necessaryProperties = [
-        "UserID",
         "roleID",
         "FirstName",
         "LastName",
@@ -134,7 +133,7 @@ app.post('/user', (req, res) => {
 
     //Create query (Sproc) Inserting user into db
     db.sync().then(() => {
-        let query = `call 3rdYearProject.Insert_User_Data(${user.UserID}, ${user.roleID}, '${user.FirstName}','${user.LastName}','${user.Address1}','${user.Address2}','${user.Address3}','${user.county}','${user.ContactNo}', '${user.email}');`
+        let query = `call 3rdYearProject.Insert_User_Data(${user.roleID}, '${user.FirstName}','${user.LastName}','${user.Address1}','${user.Address2}','${user.Address3}','${user.county}','${user.ContactNo}', '${user.email}');`
         db.query(query).then(data => {
             res.status(201).send({
                 message: 'User added'
